@@ -11,10 +11,19 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+/**
+ * @author Bored & Broke Dev Team
+ * @version 0
+ *
+ */
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
+    /**
+     * Sets up the Map when the activity is created
+     * @param savedInstanceState Used to run app
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,9 +31,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        try
+        {
+            mapFragment.getMapAsync(this);
+        }
+        catch(NullPointerException npe)
+        {
+            //Big Error TODO
+        }
     }
-
 
     /**
      * Manipulates the map once available.
@@ -34,6 +49,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
+     *
+     * @param googleMap takes in the googleMap that is declared and will run as an activity
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
