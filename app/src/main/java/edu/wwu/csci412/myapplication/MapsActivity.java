@@ -1,5 +1,5 @@
 package edu.wwu.csci412.myapplication;
-
+//Mason's commit
 import androidx.fragment.app.FragmentActivity;
 
 import android.os.Bundle;
