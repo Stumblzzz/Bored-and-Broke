@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:gravity="center"
-        android:text="@string/app_name"
+        android:text="@string/register_account"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,14 +33,31 @@
         android:id="@+id/editText_register_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="144dp"
+        android:drawableStart="@drawable/ic_action_user"
+        android:drawableLeft="@drawable/ic_action_user"
+        android:ems="15"
+        android:hint="@string/register_email"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName|textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_app_name" />
+
+    <EditText
+        android:id="@+id/editText_register_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="75dp"
         android:drawableStart="@drawable/ic_action_user"
         android:drawableLeft="@drawable/ic_action_user"
         android:ems="15"
-        android:hint="@string/login_name"
+        android:hint="@string/register_full_name"
         android:importantForAutofill="no"
         android:inputType="textPersonName|textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_app_name" />
 
@@ -52,7 +69,7 @@
         android:drawableStart="@drawable/ic_action_password"
         android:drawableLeft="@drawable/ic_action_password"
         android:ems="15"
-        android:hint="@string/password"
+        android:hint="@string/register_password"
         android:importantForAutofill="no"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="@+id/editText_register_email"
@@ -60,27 +77,32 @@
         app:layout_constraintStart_toStartOf="@+id/editText_register_email"
         app:layout_constraintTop_toBottomOf="@+id/editText_register_email" />
 
-    <TextView
-        android:id="@+id/textView_register"
+    <EditText
+        android:id="@+id/editText_register_confirm_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:drawableStart="@drawable/ic_action_password"
+        android:drawableLeft="@drawable/ic_action_password"
+        android:ems="15"
+        android:hint="@string/register_confirm_password"
+        android:importantForAutofill="no"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="@+id/editText_register_email"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/editText_register_email"
+        app:layout_constraintTop_toBottomOf="@+id/editText_register_password" />
+
+    <Button
+        android:id="@+id/button_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:onClick="register"
         android:text="@string/register"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_register" />
-
-    <Button
-        android:id="@+id/button_register"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="75dp"
-        android:onClick="login"
-        android:text="@string/login"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_register_password" />
+        app:layout_constraintTop_toBottomOf="@+id/editText_register_confirm_password" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
