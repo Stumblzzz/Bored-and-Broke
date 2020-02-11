@@ -1,4 +1,4 @@
-package edu.wwu.csci412.myapplication;
+package edu.wwu.csci412.cp2;
 
 import android.content.Context;
 

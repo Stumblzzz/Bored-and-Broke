@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.wwu.csci412.myapplication">
+    package="edu.wwu.csci412.cp2">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -37,6 +37,16 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/login">
+        </activity>
+
+        <activity
+            android:name=".RegisterActivity"
+            android:label="@string/title_activity_register">
         </activity>
 
         <activity
