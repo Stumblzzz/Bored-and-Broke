@@ -2,7 +2,9 @@ package edu.wwu.csci412.cp2;
 //Mason's commit
 import androidx.fragment.app.FragmentActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,8 +29,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_maps);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_maps);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -61,5 +63,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng cfBuilding = new LatLng(48.732839, -122.485237);
         mMap.addMarker(new MarkerOptions().position(cfBuilding).title("Marker for Communications Facility"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(cfBuilding));
+    }
+
+    public void boredButton(View view)
+    {
+        Intent myIntent = new Intent (this, activity_list.class);
+        this.startActivity(myIntent);
+    }
+
+    public void  menuButton(View view)
+    {
+        Intent myIntent  = new Intent (this, specific_activity.class);
+        this.startActivity(myIntent);
     }
 }

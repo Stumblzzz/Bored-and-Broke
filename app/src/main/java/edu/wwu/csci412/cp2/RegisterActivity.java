@@ -18,7 +18,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void register(View v) {
-
         registerFinish();
     }
 
