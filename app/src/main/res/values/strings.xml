@@ -1,4 +1,27 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="title_activity_main">Home</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_register">Register</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_not_signed_in">Bored and Broke</string>
+
+    <string name="app_name">CSCI412-Group5-Bored&amp;Broke-Checkpoint2</string>
+    <string name="login_name">Username or Email Address</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+
+    <string name="register">Register</string>
+    <string name="register_account">Register a New Account</string>
+    <string name="register_full_name">Full Name</string>
+    <string name="register_email">Email Address</string>
+    <string name="register_password">Password</string>
+    <string name="register_confirm_password">Confirm Password</string>
+    <string name="register_username">Username</string>
+    <string name="register_name_error">Please enter a valid name (a-z, A-Z)</string>
+    <string name="register_email_error">Please enter a valid email address</string>
+    <string name="register_password_error">Password must be 8 characters long</string>
+    <string name="register_password_match_error">Make sure passwords match</string>
+    <string name="register_email_repeated_error">This email has already been used</string>
+
+    <string name="not_signed_in_name">Bored and Broke</string>
 </resources>
