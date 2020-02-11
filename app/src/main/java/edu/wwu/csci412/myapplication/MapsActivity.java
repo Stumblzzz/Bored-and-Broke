@@ -2,7 +2,9 @@ package edu.wwu.csci412.myapplication;
 //Mason's commit
 import androidx.fragment.app.FragmentActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -60,5 +62,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng cfBuilding = new LatLng(48.732839, -122.485237);
         mMap.addMarker(new MarkerOptions().position(cfBuilding).title("Marker for Communications Facility"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(cfBuilding));
+    }
+
+    public void boredButton(View view)
+    {
+        Intent myIntent = new Intent (this, activity_list.class);
+        this.startActivity(myIntent);
+    }
+
+    public void  menuButton(View view)
+    {
+        Intent myIntent  = new Intent (this, specific_activity.class);
+        this.startActivity(myIntent);
     }
 }
