@@ -19,7 +19,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(View v) {
-
+        Intent mapsIntent = new Intent (this, MapsActivity.class);
+        this.startActivity(mapsIntent);
     }
 
     public void loginFinish() {
