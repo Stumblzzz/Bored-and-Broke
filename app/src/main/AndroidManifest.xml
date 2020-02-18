@@ -39,23 +39,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".RegisterActivity"
             android:label="@string/title_activity_register">
         </activity>
+
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login">
         </activity>
-        <activity
-            android:name="edu.wwu.csci412.cp2.MapsActivity"
-            android:label="@string/title_activity_maps">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+        <activity
+            android:name=".ProfileActivity"
+            android:label="@string/title_activity_profile">
         </activity>
+
+        <activity
+            android:name=".MapsActivity"
+            android:label="@string/title_activity_maps">
+        </activity>
+
         <activity
             android:name=".activity_list"
             android:screenOrientation="portrait">

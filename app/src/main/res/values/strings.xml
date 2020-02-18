@@ -2,6 +2,7 @@
     <string name="title_activity_main">Home</string>
     <string name="title_activity_login">Login</string>
     <string name="title_activity_register">Register</string>
+    <string name="title_activity_profile">Profile</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_not_signed_in">Bored and Broke</string>
 
@@ -21,6 +22,11 @@
     <string name="register_password_error">Password must be 8 characters long</string>
     <string name="register_password_match_error">Make sure passwords match</string>
     <string name="register_email_repeated_error">This email has already been used</string>
+
+    <string name="profile_name">Bruno Steban</string>
+    <string name="profile_number_of_activities">50 Activities</string>
+    <string name="profile_number_of_photos">248 Photos</string>
+    <string name="profile_number_of_reviews">13 Reviews</string>
 
     <string name="not_signed_in_name">Bored and Broke</string>
     <string name="i_m_bored">I\'m Bored</string>
