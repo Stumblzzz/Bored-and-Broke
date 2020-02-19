@@ -76,4 +76,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Intent myIntent  = new Intent (this, specific_activity.class);
         this.startActivity(myIntent);
     }
+
+    public void profileButton(View view) {
+        Intent profileIntent = new Intent(this, ProfileActivity.class);
+        this.startActivity(profileIntent);
+    }
 }
