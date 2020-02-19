@@ -21,7 +21,7 @@
         android:padding="4dp" >
 
         <Button
-            android:id="@+id/radioPopular"
+            android:id="@+id/radioButton_profile_activities"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -38,7 +38,7 @@
             />
 
         <Button
-            android:id="@+id/radioAZ"
+            android:id="@+id/radioButton_profile_photos"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -46,6 +46,21 @@
             android:text="@string/Menu"
             android:onClick="menuButton"
             />
+
+        <View
+            android:id="@+id/verticalLine"
+            android:layout_width="1dip"
+            android:layout_height="match_parent"
+            android:background="#aaa" />
+
+        <Button
+            android:id="@+id/radioButton_profile_reviews"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal|center_vertical"
+            android:onClick="profileButton"
+            android:text="@string/profile" />
 
     </RadioGroup>
 
