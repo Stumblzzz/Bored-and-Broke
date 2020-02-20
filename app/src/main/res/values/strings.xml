@@ -5,9 +5,10 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_not_signed_in">Bored and Broke</string>
 
-    <string name="login_name">Username or Email Address</string>
+    <string name="login_name">Email Address</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
+    <string name="login_error_string">Invalid Credentials Try Again</string>
 
     <string name="register">Register</string>
     <string name="register_account">Register a New Account</string>
