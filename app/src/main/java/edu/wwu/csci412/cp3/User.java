@@ -1,4 +1,4 @@
-package edu.wwu.csci412.cp2;
+package edu.wwu.csci412.cp3;
 
 //TODO: Use this object
 public class User {

@@ -1,4 +1,4 @@
-package edu.wwu.csci412.cp2;
+package edu.wwu.csci412.cp3;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,8 +8,6 @@ import android.widget.TextView;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import org.w3c.dom.Text;
 
 public class LoginActivity extends AppCompatActivity {
     SQL_Utils sql_utils = new SQL_Utils();
