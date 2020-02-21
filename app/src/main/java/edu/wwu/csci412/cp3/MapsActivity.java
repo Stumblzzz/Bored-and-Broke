@@ -1,4 +1,4 @@
-package edu.wwu.csci412.cp2;
+package edu.wwu.csci412.cp3;
 //Mason's commit
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;

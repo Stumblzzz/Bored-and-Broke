@@ -1,6 +1,4 @@
-package edu.wwu.csci412.cp2;
-
-import java.sql.*;
+package edu.wwu.csci412.cp3;
 
 import java.util.regex.Pattern;
 
