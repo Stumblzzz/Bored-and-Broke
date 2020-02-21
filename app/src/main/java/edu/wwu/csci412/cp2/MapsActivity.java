@@ -1,10 +1,17 @@
 package edu.wwu.csci412.cp2;
 //Mason's commit
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,8 +25,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * @version 0
  *
  */
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity
+        extends FragmentActivity
+        implements OnMapReadyCallback,
+        GoogleMap.OnMyLocationButtonClickListener,
+        GoogleMap.OnMyLocationClickListener {
 
+    private static final int MY_LOCATION_REQUEST_CODE = 1;
     private GoogleMap mMap;
 
     /**
@@ -56,16 +68,52 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * @param googleMap takes in the googleMap that is declared and will run as an activity
      */
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(GoogleMap googleMap)
+    {
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
         LatLng cfBuilding = new LatLng(48.732839, -122.485237);
         mMap.addMarker(new MarkerOptions().position(cfBuilding).title("Marker for Communications Facility"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(cfBuilding));
+
+
+        //Location Services test
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED)
+        {
+            mMap.setMyLocationEnabled(true);
+        }
+        else
+        {
+            // Show rationale, TODO this is probably something we should do at some point
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, MY_LOCATION_REQUEST_CODE);
+        }
+
+
     }
 
-    public void boredButton(View view)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    {
+        if (requestCode == MY_LOCATION_REQUEST_CODE)
+        {
+            if (permissions.length == 1 &&
+                    permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION)&& grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                mMap.setMyLocationEnabled(true);
+                mMap.setOnMyLocationButtonClickListener(this);
+                mMap.setOnMyLocationClickListener(this);
+            }
+            else
+            {
+                // Permission was denied. Display an error message.
+            }
+        }
+    }
+
+        public void boredButton(View view)
     {
         Intent myIntent = new Intent (this, activity_list.class);
         this.startActivity(myIntent);
@@ -81,4 +129,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Intent profileIntent = new Intent(this, ProfileActivity.class);
         this.startActivity(profileIntent);
     }
+
+    //Location Services Functions begin below this point
+    @Override
+    public void onMyLocationClick(@NonNull Location location) {
+        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+        // Return false so that we don't consume the event and the default behavior still occurs
+        // (the camera animates to the user's current position).
+        return false;
+    }
+
 }

@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MapsActivity">
-    
+
     <fragment
         android:id="@+id/map"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="vertical"
-        class="com.google.android.gms.maps.SupportMapFragment"/>
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        class="com.google.android.gms.maps.SupportMapFragment" />
 
     <RadioGroup
         android:id="@+id/radio_group_list_selector"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:orientation="horizontal"
         android:background="#80000000"
-        android:padding="4dp" >
+        android:orientation="horizontal"
+        android:padding="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/radioButton_profile_activities"
@@ -26,16 +30,14 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_horizontal|center_vertical"
-            android:text="@string/i_m_bored"
             android:onClick="boredButton"
-            />
+            android:text="@string/i_m_bored" />
 
         <View
             android:id="@+id/VerticalLine"
-            android:layout_width="1dip"
-            android:layout_height="match_parent"
-            android:background="#aaa"
-            />
+            android:layout_width="1dp"
+            android:layout_height="48dp"
+            android:background="#aaa" />
 
         <Button
             android:id="@+id/radioButton_profile_photos"
@@ -43,9 +45,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_horizontal|center_vertical"
-            android:text="@string/Menu"
             android:onClick="menuButton"
-            />
+            android:text="@string/Menu" />
 
         <View
             android:id="@+id/verticalLine"
@@ -55,7 +56,7 @@
 
         <Button
             android:id="@+id/radioButton_profile_reviews"
-            android:layout_width="0dp"
+            android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_horizontal|center_vertical"
@@ -64,4 +65,4 @@
 
     </RadioGroup>
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
