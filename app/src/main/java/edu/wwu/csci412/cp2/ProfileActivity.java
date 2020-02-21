@@ -11,6 +11,10 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.net.HttpURLConnection;
+import java.net.*;
+import java.io.*;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,6 +26,9 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_profile);
+
+        ImageView profilePicture = findViewById(R.id.imageView_profile_picture);
+        //TODO: profilePicture.setImageURI(Uri.parse("https://boredandbrokebucket.s3-us-west-1.amazonaws.com/GOW.png"));
 
         updateView();
     }
@@ -129,6 +136,17 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         updateView();
+    }
+
+    Bitmap drawable_from_url(String url) throws java.net.MalformedURLException, java.io.IOException {
+
+        HttpURLConnection connection = (HttpURLConnection)new URL(url) .openConnection();
+        connection.setRequestProperty("User-agent","Mozilla/4.0");
+
+        connection.connect();
+        InputStream input = connection.getInputStream();
+
+        return BitmapFactory.decodeStream(input);
     }
 
     public void displayActivities(View view) {

@@ -30,7 +30,7 @@
         tools:srcCompat="@mipmap/launcher_round" />
 
     <EditText
-        android:id="@+id/editText_register_email"
+        android:id="@+id/editText_login_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="75dp"
@@ -45,7 +45,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView_app_name" />
 
     <EditText
-        android:id="@+id/editText_register_password"
+        android:id="@+id/editText_login_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
@@ -55,10 +55,23 @@
         android:hint="@string/password"
         android:importantForAutofill="no"
         android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="@+id/editText_register_email"
+        app:layout_constraintEnd_toEndOf="@+id/editText_login_email"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/editText_register_email"
-        app:layout_constraintTop_toBottomOf="@+id/editText_register_email" />
+        app:layout_constraintStart_toStartOf="@+id/editText_login_email"
+        app:layout_constraintTop_toBottomOf="@+id/editText_login_email" />
+
+    <TextView
+        android:id="@+id/login_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:ems="15"
+        android:textColor="@color/colorRed"
+        android:text="@string/login_error_string"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/editText_login_password"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@+id/editText_login_password" />
 
     <TextView
         android:id="@+id/textView_register"
@@ -81,6 +94,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_register_password" />
+        app:layout_constraintTop_toBottomOf="@+id/editText_login_password" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

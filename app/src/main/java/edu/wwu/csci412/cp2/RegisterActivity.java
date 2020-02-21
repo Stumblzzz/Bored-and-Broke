@@ -9,15 +9,16 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.content.Intent;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class RegisterActivity extends AppCompatActivity {
+
+    SQL_Utils sql_utils = new SQL_Utils();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_register);
     }
 
@@ -40,7 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
         boolean isValid = checkValidRegistration(fullName, email, password, confirmPassword);
 
         if(isValid) {
-            if(addCredentials(email, password)){
+            if(addCredentials(email, password, fullName)){
                 Intent myIntent = new Intent (this, LoginActivity.class);
                 startActivity(myIntent);
                 registerFinish();
@@ -75,13 +76,13 @@ public class RegisterActivity extends AppCompatActivity {
 
         //Check email
         if(!checkValidEmail(email)){
-            emailRepeatedError.setVisibility(View.VISIBLE);
+            emailError.setVisibility(View.VISIBLE);
             isValid = false;
         }
 
         //Check for repeated email
-        if(repeatedEmail(email)){
-            emailError.setVisibility(View.VISIBLE);
+        if(!newEmail(email)){
+            emailRepeatedError.setVisibility(View.VISIBLE);
             isValid = false;
         }
 
@@ -101,63 +102,23 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     //Takes the valid credentials and inserts them into the database
-    private boolean addCredentials(String email, String password){
-        try {
-            new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        Class.forName("com.mysql.jdbc.Driver");
-                        Connection con = DriverManager.getConnection("jdbc:mysql://database-1.ckxktd7argpj.us-west-1.rds.amazonaws.com/registration", "admin", "BoredAndBroke1!");
-                        Statement stmt = con.createStatement();
-                        PreparedStatement prepStatement = con.prepareStatement("INSERT INTO `registration`.`email_pass` (`email`,`password`) VALUES (?,?);");
-                        prepStatement.setString(1,email);
-                        prepStatement.setString(2,password);
-                        prepStatement.execute();
-                        con.close();
-                    } catch (Exception e) {
-                        Log.e("Broken SQL", e.toString());
-                    }
-                }
-            }).start();
-            return true;
-        }catch(Exception e){
-            return false;
-        }
+    private boolean addCredentials(String email, String password, String fullName){
+        String columnNames[] = {"email", "pass", "name"};
+        String values[] = {email, password, fullName};
+        return sql_utils.sqlInsert("registration", columnNames, values);
     }
 
     //Checks to make sure that the email does not already exist in the DB
-    private boolean repeatedEmail(String attemptEmail){
-        final ResultSet[] resultSetArray = new ResultSet[1];
-        final int[] rowCount = new int[1];
+    private boolean newEmail(String attemptEmail){
+        String condition = "email='" + attemptEmail + "'";
+        int numberOfEquivalentEmails = sql_utils.sqlRowCount("registration", condition);
 
-        try {
-            new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        Class.forName("com.mysql.jdbc.Driver");
-                        Connection con = DriverManager.getConnection("jdbc:mysql://database-1.ckxktd7argpj.us-west-1.rds.amazonaws.com/registration", "admin", "BoredAndBroke1!");
-                        Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-                        ResultSet rset = stmt.executeQuery("SELECT COUNT(*) FROM `registration`.`email_pass` WHERE `email`='" + attemptEmail + "';");
-                        resultSetArray[0] = rset;
-
-                        con.close();
-                    } catch (Exception e) {
-                        Log.e("Broken SQL", e.toString());
-                    }
-                }
-            }).start();
-        } catch(Exception e){
-            Log.e("Broken SQL", e.toString());
+        //not new email
+        if(numberOfEquivalentEmails > 0){
+            return false;
+        }else{
+            return true;
         }
-
-        //Not a new email
-        //if(rowCount[0] != 0){
-        //    return false;
-        //}else{
-        //    return true;
-        //}
-        //TODO: Fix Commented Code
-        return false;
     }
 
     //makes sure that a given string is a valid email address
