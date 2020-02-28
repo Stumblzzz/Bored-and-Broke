@@ -1,4 +1,4 @@
-package edu.wwu.csci412.cp3;
+package edu.wwu.csci412.cp4;
 
 import android.content.Intent;
 import android.os.Bundle;
