@@ -1,4 +1,4 @@
-package edu.wwu.csci412.cp3;
+package edu.wwu.csci412.cp4;
 
 import java.sql.*;
 import android.util.Log;
@@ -115,5 +115,33 @@ public class SQL_Utils {
         }
 
         return true;
+    }
+
+    public ResultSet sqlSelect(String table, String condition) {
+        Connection conn = getConnection();
+        ResultSet[] results = new ResultSet[1];
+
+        String query = "SELECT * FROM " + table + " WHERE " + condition + ";";
+
+        try {
+            Thread t = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Statement stmt = conn.createStatement();
+                        results[0] = stmt.executeQuery(query);
+
+                        stmt.close();
+                        conn.close();
+                    } catch (Exception e) {
+                        Log.e("Broken SQL: ", e.toString());
+                    }
+                }
+            });
+            t.start();
+            t.join();
+        } catch (Exception e) {
+            Log.e("Broken SQL: ", e.toString());
+        }
+        return results[0];
     }
 }

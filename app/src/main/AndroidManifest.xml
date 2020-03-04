@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.wwu.csci412.cp3">
+    package="edu.wwu.csci412.cp4">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -35,7 +35,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="edu.wwu.csci412.cp3.NotSignedInLandingPage"
+            android:name="edu.wwu.csci412.cp4.NotSignedInLandingPage"
             android:label="@string/title_activity_not_signed_in">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,33 +45,33 @@
         </activity>
 
         <activity
-            android:name="edu.wwu.csci412.cp3.RegisterActivity"
+            android:name="edu.wwu.csci412.cp4.RegisterActivity"
             android:label="@string/title_activity_register">
         </activity>
 
         <activity
-            android:name="edu.wwu.csci412.cp3.LoginActivity"
+            android:name="edu.wwu.csci412.cp4.LoginActivity"
             android:label="@string/title_activity_login">
         </activity>
 
         <activity
-            android:name="edu.wwu.csci412.cp3.ProfileActivity"
+            android:name="edu.wwu.csci412.cp4.ProfileActivity"
             android:label="@string/title_activity_profile">
         </activity>
 
         <activity
-            android:name="edu.wwu.csci412.cp3.MapsActivity"
+            android:name="edu.wwu.csci412.cp4.MapsActivity"
             android:label="@string/title_activity_maps">
         </activity>
 
         <activity
-            android:name="edu.wwu.csci412.cp3.activity_list"
+            android:name="edu.wwu.csci412.cp4.activity_list"
             android:screenOrientation="portrait">
 
         </activity>
 
         <activity
-            android:name="edu.wwu.csci412.cp3.specific_activity"
+            android:name="edu.wwu.csci412.cp4.specific_activity"
             android:screenOrientation="portrait">
 
         </activity>
