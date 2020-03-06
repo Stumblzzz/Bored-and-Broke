@@ -6,12 +6,18 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,11 +33,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
  */
 public class MapsActivity
         extends FragmentActivity
-        implements OnMapReadyCallback,
+        implements LocationListener, OnMapReadyCallback,
         GoogleMap.OnMyLocationButtonClickListener,
-        GoogleMap.OnMyLocationClickListener {
+        GoogleMap.OnMyLocationClickListener{
 
     private static final int MY_LOCATION_REQUEST_CODE = 1;
+
+    protected LocationManager locationManager;
+
+
+
     private GoogleMap mMap;
 
     /**
@@ -46,6 +57,8 @@ public class MapsActivity
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+
+
         try
         {
             mapFragment.getMapAsync(this);
@@ -73,9 +86,10 @@ public class MapsActivity
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng cfBuilding = new LatLng(48.732839, -122.485237);
-        mMap.addMarker(new MarkerOptions().position(cfBuilding).title("Marker for Communications Facility"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(cfBuilding));
+//        LatLng cfBuilding = new LatLng(48.732839, -122.485237);
+//        mMap.addMarker(new MarkerOptions().position(cfBuilding).title("Marker for Communications Facility"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(cfBuilding));
+
 
 
         //Location Services test
@@ -84,6 +98,8 @@ public class MapsActivity
                 == PackageManager.PERMISSION_GRANTED)
         {
             mMap.setMyLocationEnabled(true);
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
         }
         else
         {
@@ -134,6 +150,46 @@ public class MapsActivity
     @Override
     public void onMyLocationClick(@NonNull Location location) {
         Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d("Latitude","status");
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        Log.d("Latitude","disable");
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        Log.d("Latitude","enable");
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        Log.d("Latitude","status");
+    }
+
+    public void createActivity(View view) {
+//
+//        LatLng cfBuilding = new LatLng(48.732839, -122.485237);
+//
+//        mMap.addMarker(new MarkerOptions().position(cfBuilding).title("Marker for Communications Facility"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(cfBuilding));
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            Location location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+
+            MarkerOptions mapMark = new MarkerOptions();
+            mapMark.position(new LatLng(location.getLatitude(), location.getLongitude()));
+
+            mapMark.title("Hey guys Scott here!");
+
+            mMap.addMarker(mapMark);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
+        }
     }
 
     @Override
