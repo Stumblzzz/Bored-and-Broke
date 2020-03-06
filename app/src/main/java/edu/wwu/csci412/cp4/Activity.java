@@ -5,50 +5,74 @@ public class Activity {
     private String name;
     private String description;
     private User creator;
-    private double latitude;
-    private double longitude;
-    private String address;
+    private Location location;
 
-    public Activity(String name, String description, User creator, String address) {
+    public Activity(int id, String name, String description, User creator, Location location) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.creator = creator;
-        this.address = address;
+        this.location = location;
     }
 
     public Activity(String name, String description, User creator, double latitude, double longitude) {
         this.name = name;
         this.description = description;
         this.creator = creator;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.location = new Location(latitude, longitude);
+    }
+
+    public Activity(String name, String description, User creator, String address) {
+        this.name = name;
+        this.description = description;
+        this.creator = creator;
+        this.location = new Location(address);
     }
 
     public int getId() {
-        return this.id;
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public User getCreator() {
         return creator;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public void setCreator(User creator) {
+        this.creator = creator;
     }
 
-    public double getLongitude() {
-        return longitude;
+    public Location getLocation() {
+        return location;
     }
 
-    public String getAddress() {
-        return address;
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    @Override
+    public String toString() {
+        return "Activity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", creator=" + creator +
+                ", location=" + location +
+                '}';
     }
 }
