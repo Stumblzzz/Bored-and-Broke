@@ -25,15 +25,15 @@ public class activity_list extends AppCompatActivity
 
 
         //SQL query below
-        ResultSet results = sqlUtils.sqlSelect("activities", "1=1" );
+        SQLCloseConnection sqlCloseConnection = sqlUtils.sqlSelectNoWhere("activities");
+
 
         try {
-            populateScrollView(results);
+            populateScrollView(sqlCloseConnection.getResultSet());
+            sqlCloseConnection.closeSQLConn();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void backButton(View view)
@@ -44,12 +44,12 @@ public class activity_list extends AppCompatActivity
     public void populateScrollView(ResultSet results) throws SQLException {
         ScrollView activity_list_scroll_view = findViewById(R.id.activity_list_scroll_view);
         View tempTableRow = null;
-        int i = 0;
-
+        int i=0;
         try
         {
             while(results.next())
             {
+                i++;
                 tempTableRow = (TableRow) View.inflate(this, R.layout.activity_list_row, null);
 
                 //This would be where we take care of image stuff if we get it working
@@ -67,6 +67,8 @@ public class activity_list extends AppCompatActivity
 
                 activity_list_scroll_view.addView(tempTableRow);
             }
+
+
         }
         catch (SQLException e)
         {
