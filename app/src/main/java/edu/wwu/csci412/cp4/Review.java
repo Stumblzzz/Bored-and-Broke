@@ -17,6 +17,15 @@ public class Review {
         this.creator = creator;
     }
 
+    public Review(int id, double rating, String title, String description) {
+        this.id = id;
+        this.activity = null;
+        this.rating = rating;
+        this.title = title;
+        this.description = description;
+        this.creator = null;
+    }
+
     public int getId() {
         return id;
     }

@@ -144,4 +144,32 @@ public class SQL_Utils {
         }
         return results[0];
     }
+
+    public boolean sqlDelete(String table, String condition) {
+        Connection conn = getConnection();
+
+        String query = "DELETE * FROM " + table + " WHERE " + condition + ";";
+
+        try {
+            Thread t = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Statement stmt = conn.createStatement();
+                        stmt.executeQuery(query);
+
+                        stmt.close();
+                        conn.close();
+                    } catch (Exception e) {
+                        Log.e("Broken SQL: ", e.toString());
+                    }
+                }
+            });
+            t.start();
+            t.join();
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
 }
