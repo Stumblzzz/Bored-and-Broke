@@ -8,11 +8,12 @@
 
     <fragment
         android:id="@+id/map"
+        class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/radio_group_list_selector"
         app:layout_constraintTop_toTopOf="parent"
-        class="com.google.android.gms.maps.SupportMapFragment" />
+        android:layout_height="0dp"
+        />
 
     <RadioGroup
         android:id="@+id/radio_group_list_selector"
@@ -45,9 +46,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_horizontal|center_vertical"
-            android:text="Create"
-            android:onClick="createActivity"/>
-
+            android:onClick="createActivity"
+            android:text="Create" />
 
 
         <View
