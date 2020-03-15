@@ -4,10 +4,10 @@ public class Activity {
     private int id;
     private String name;
     private String description;
-    private User creator;
+    private String creator;
     private Location location;
 
-    public Activity(int id, String name, String description, User creator, Location location) {
+    public Activity(int id, String name, String description, String creator, Location location) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -15,14 +15,24 @@ public class Activity {
         this.location = location;
     }
 
-    public Activity(String name, String description, User creator, double latitude, double longitude) {
+
+    public Activity(String name, String description, String creator, Location location) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.creator = creator;
+        this.location = location;
+    }
+
+
+    public Activity(String name, String description, String creator, double latitude, double longitude) {
         this.name = name;
         this.description = description;
         this.creator = creator;
         this.location = new Location(latitude, longitude);
     }
 
-    public Activity(String name, String description, User creator, String address) {
+    public Activity(String name, String description, String creator, String address) {
         this.name = name;
         this.description = description;
         this.creator = creator;
@@ -57,11 +67,11 @@ public class Activity {
         this.description = description;
     }
 
-    public User getCreator() {
+    public String getCreator() {
         return creator;
     }
 
-    public void setCreator(User creator) {
+    public void setCreator(String creator) {
         this.creator = creator;
     }
 

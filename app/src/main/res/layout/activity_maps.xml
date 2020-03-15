@@ -33,6 +33,12 @@
             android:onClick="boredButton"
             android:text="@string/i_m_bored" />
 
+        <View
+            android:id="@+id/VerticalLine"
+            android:layout_width="1dp"
+            android:layout_height="48dp"
+            android:background="#aaa" />
+
         <Button
             android:id="@+id/Create"
             android:layout_width="0dp"
@@ -42,20 +48,7 @@
             android:text="Create"
             android:onClick="createActivity"/>
 
-        <View
-            android:id="@+id/VerticalLine"
-            android:layout_width="1dp"
-            android:layout_height="48dp"
-            android:background="#aaa" />
 
-        <Button
-            android:id="@+id/radioButton_profile_photos"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_horizontal|center_vertical"
-            android:onClick="menuButton"
-            android:text="@string/Menu" />
 
         <View
             android:id="@+id/verticalLine"
