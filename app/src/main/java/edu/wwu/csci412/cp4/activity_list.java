@@ -1,14 +1,22 @@
 package edu.wwu.csci412.cp4;
 
+import android.app.ActionBar;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.tabs.TabLayout;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,12 +29,10 @@ public class activity_list extends AppCompatActivity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
-
+        //setContentView(R.layout.activity_list);
 
         //SQL query below
         SQLCloseConnection sqlCloseConnection = sqlUtils.sqlSelectNoWhere("activities");
-
 
         try {
             populateScrollView(sqlCloseConnection.getResultSet());
@@ -41,34 +47,73 @@ public class activity_list extends AppCompatActivity
         this.finish();
     }
 
-    public void populateScrollView(ResultSet results) throws SQLException {
-        ScrollView activity_list_scroll_view = findViewById(R.id.activity_list_scroll_view);
-        View tempTableRow = null;
-        int i=0;
+    public void populateScrollView(ResultSet results) throws SQLException
+    {
+        TableLayout layout = new TableLayout(this);
+
+        //Builds title card
+        TextView pageTitle = new TextView(this);
+        pageTitle.setTextSize(25);
+        pageTitle.setBackgroundColor(Color.parseColor("#80000000"));
+        pageTitle.setText(R.string.activities_near_you);
+        pageTitle.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+        layout.addView(pageTitle);
+
+        Button backButton = new Button(this);
+        backButton.setText(R.string.back);
+        backButton.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                activity_list.this.finish();
+            }
+        });
+        backButton.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        layout.addView(backButton);
+
+        Display current = this.getWindowManager().getDefaultDisplay();
+
+        ScrollView scrollView = new ScrollView(this);
+        LinearLayout internalForScrollView = new LinearLayout(this);
+        internalForScrollView.setOrientation(LinearLayout.VERTICAL);
+
         try
         {
             while(results.next())
             {
-                i++;
-                tempTableRow = (TableRow) View.inflate(this, R.layout.activity_list_row, null);
+                TableRow tableRow = new TableRow(this);
+                tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+                tableRow.setWeightSum(10);
+                tableRow.setBackgroundColor(Color.parseColor("#80000000"));
 
-                //This would be where we take care of image stuff if we get it working
-                TextView tempImageText = (TextView) tempTableRow.findViewById(R.id.sample_image_text);
-                tempImageText.setText(R.string.SampleImageTextDescription);
+                TextView rowTitle = new TextView(this);
+                rowTitle.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 9f));
+                rowTitle.setText(results.getString(1));
 
-                //This is the middle section with information about the activity
-                TextView tempDescriptionText = (TextView) tempTableRow.findViewById(R.id.sample_activity_information);
-                String description = results.getString(0) + "\n" + results.getString(1) + "\n" + results.getString(3) + "\n"
-                        + results.getString(4) + "\n" + results.getString(5) + "\n";
-                tempDescriptionText.setText(description);
+                TextView descriptionView = new TextView(this);
+                descriptionView.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 2f));
+                String description = results.getString(2)+ "\nCreated by: " + results.getString(4) + "\nDescription: "
+                        + results.getString(3) + "\nLatitude: " + results.getString(5) + "\nLongitude: " + results.getString(6);
+                descriptionView.setText(description);
+                descriptionView.setPadding(0,20,0,20);
 
-                //This is where we hypothetically have a button set up that will go to a specific_activity page that has this activities information
-                Button tempButton = (Button) tempTableRow.findViewById(R.id.activity_list_sample_button);
+                Button buttonView = new Button(this);
+                buttonView.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 3f));
+                buttonView.setText(R.string.more_info_here);
 
-                activity_list_scroll_view.addView(tempTableRow);
+                //Builds Table Row
+                tableRow.addView(rowTitle);
+                tableRow.addView(descriptionView);
+                tableRow.addView(buttonView);
+
+                //Puts TableRow in View to be added to scroll view
+                internalForScrollView.addView(tableRow);
             }
 
+            scrollView.addView(internalForScrollView);
+            layout.addView(scrollView);
 
+            setContentView(layout);
         }
         catch (SQLException e)
         {
@@ -76,6 +121,5 @@ public class activity_list extends AppCompatActivity
             e.printStackTrace();
             this.finish();
         }
-
     }
 }
