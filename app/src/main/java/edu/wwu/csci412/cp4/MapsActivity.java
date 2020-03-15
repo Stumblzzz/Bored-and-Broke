@@ -26,6 +26,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /**
  * @author Bored & Broke Dev Team
  * @version 0
@@ -84,13 +87,19 @@ public class MapsActivity
     public void onMapReady(GoogleMap googleMap)
     {
         mMap = googleMap;
+        SQL_Utils sql_utils = new SQL_Utils();
 
-        // Add a marker in Sydney and move the camera
-//        LatLng cfBuilding = new LatLng(48.732839, -122.485237);
-//        mMap.addMarker(new MarkerOptions().position(cfBuilding).title("Marker for Communications Facility"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(cfBuilding));
+        SQLCloseConnection sqlCloseConnection = sql_utils.sqlSelectNoWhere("activities");
 
-
+        try
+        {
+            populateMap(sqlCloseConnection.getResultSet());
+            sqlCloseConnection.closeSQLConn();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
         //Location Services test
 
@@ -100,6 +109,8 @@ public class MapsActivity
             mMap.setMyLocationEnabled(true);
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
+            Location location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
         }
         else
         {
@@ -187,6 +198,15 @@ public class MapsActivity
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
         return false;
+    }
+
+    public void populateMap(ResultSet results) throws SQLException
+    {
+        while(results.next())
+        {
+            LatLng tempLocation = new LatLng(results.getDouble(5), results.getDouble(6));
+            mMap.addMarker(new MarkerOptions().position(tempLocation).title(results.getString(2)));
+        }
     }
 
 }
