@@ -15,7 +15,7 @@
 
     <TextView
         android:id="@+id/specific_activity_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/map"
         android:layout_alignStart="@id/map"
@@ -29,7 +29,7 @@
 
     <TextView
         android:id="@+id/specific_activity_info"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/specific_activity_title"
         android:layout_alignStart="@id/specific_activity_title"
@@ -45,15 +45,14 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/specific_activity_info"
         android:layout_alignStart="@id/specific_activity_title"
         android:layout_alignLeft="@id/specific_activity_title"
-        android:layout_marginStart="161dp"
-        android:layout_marginLeft="161dp"
-        android:layout_marginTop="317dp"
-        android:text="@string/back"
+        android:layout_marginStart="159dp"
+        android:layout_marginLeft="159dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
         android:onClick="backButton2"
-        />
+        android:text="@string/back" />
 
 
 </RelativeLayout>

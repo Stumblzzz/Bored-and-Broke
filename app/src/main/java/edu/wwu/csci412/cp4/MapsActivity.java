@@ -114,6 +114,8 @@ public class MapsActivity
             mMap.setMyLocationEnabled(true);
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
+            Location location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
         }
         else
         {

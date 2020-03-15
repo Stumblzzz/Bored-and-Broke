@@ -117,7 +117,10 @@ public class SQL_Utils {
         return true;
     }
 
-    public ResultSet sqlSelect(String table, String condition) {
+    public SQLCloseConnection sqlSelect(String table, String condition) {
+        SQLCloseConnection[] sqlCloseConnections = new SQLCloseConnection[1];
+        SQLCloseConnection sqlCloseConnection = new SQLCloseConnection();
+        sqlCloseConnections[0] = sqlCloseConnection;
         Connection conn = getConnection();
         ResultSet[] results = new ResultSet[1];
 
@@ -130,8 +133,11 @@ public class SQL_Utils {
                         Statement stmt = conn.createStatement();
                         results[0] = stmt.executeQuery(query);
 
-                        stmt.close();
-                        conn.close();
+                        sqlCloseConnections[0].setConnection(conn);
+                        sqlCloseConnections[0].setResultSet(results[0]);
+                        sqlCloseConnections[0].setStatement(stmt);
+                        //stmt.close();
+                        //conn.close();
                     } catch (Exception e) {
                         Log.e("Broken SQL: ", e.toString());
                     }
@@ -142,7 +148,7 @@ public class SQL_Utils {
         } catch (Exception e) {
             Log.e("Broken SQL: ", e.toString());
         }
-        return results[0];
+        return sqlCloseConnections[0];
     }
 
     public SQLCloseConnection sqlSelectNoWhere(String table) {

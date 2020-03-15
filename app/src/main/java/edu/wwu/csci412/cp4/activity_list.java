@@ -1,6 +1,7 @@
 package edu.wwu.csci412.cp4;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Display;
@@ -100,6 +101,16 @@ public class activity_list extends AppCompatActivity
                 Button buttonView = new Button(this);
                 buttonView.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 3f));
                 buttonView.setText(R.string.more_info_here);
+                int activity_id = results.getInt(1);
+                buttonView.setOnClickListener( new View.OnClickListener()
+                {
+                    public void onClick(View v)
+                    {
+                        Intent myIntent  = new Intent (activity_list.this, specific_activity.class);
+                        myIntent.putExtra("activity_id", activity_id);
+                        activity_list.this.startActivity(myIntent);
+                    }
+                });
 
                 //Builds Table Row
                 tableRow.addView(rowTitle);
