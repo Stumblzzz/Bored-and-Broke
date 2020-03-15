@@ -68,7 +68,7 @@
 
         <activity
             android:name="edu.wwu.csci412.cp4.CreateActivity"
-            android:label="@string/title_create_activity">
+            android:label="@string/create_Activity">
         </activity>
 
         <activity
