@@ -1,7 +1,9 @@
 package edu.wwu.csci412.cp4;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,16 +12,29 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.net.HttpURLConnection;
 import java.net.*;
 import java.io.*;
+import java.util.Arrays;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 public class ProfileActivity extends AppCompatActivity {
     private int imageViewSelected;
+    // Storage Permissions
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+    private static final int REQUEST_CAMERA = 1;
+    private static String[] PERMISSIONS_CAMERA = {
+            Manifest.permission.CAMERA
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +58,72 @@ public class ProfileActivity extends AppCompatActivity {
         imageViewSelected = 0;
     }
 
+    /**
+     * Checks if the app has permission to write to device storage
+     *
+     * If the app does not has permission then the user will be prompted to grant permissions
+     *
+     * @param activity
+     */
+    public static void verifyStoragePermissions(android.app.Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        System.out.println("permission: " + permission);
+        System.out.println("PERMISSION_GRANTED: " + PackageManager.PERMISSION_GRANTED);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
+
+    public static void verifyCameraPermissions(android.app.Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.CAMERA);
+
+        System.out.println("permission: " + permission);
+        System.out.println("PERMISSION_GRANTED: " + PackageManager.PERMISSION_GRANTED);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_CAMERA,
+                    REQUEST_CAMERA
+            );
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        System.out.println("requestCode: " + requestCode);
+        System.out.println("permissions: " + Arrays.toString(permissions));
+        System.out.println("grantResults: " + Arrays.toString(grantResults));
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(this, "Please give your permission.", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+
     public void selectImage(View view) {
         switch (view.getId()) {
             case R.id.imageView_profile_background:
@@ -56,6 +137,13 @@ public class ProfileActivity extends AppCompatActivity {
                 break;
         }
 
+        verifyStoragePermissions(this);
+        verifyCameraPermissions(this);
+
+        showBuilder();
+    }
+
+    public void showBuilder() {
         final String[] options = { "Take Photo", "Choose from Gallery", "Cancel" };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -65,14 +153,17 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onClick(DialogInterface dialog, int item) {
+
                 switch (options[item]) {
                     case "Take Photo":
                         Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                        startActivityForResult(takePicture, 0);
+                        if (takePicture.resolveActivity(getPackageManager()) != null) {
+                            startActivityForResult(takePicture, 0);
+                        }
                         break;
                     case "Choose from Gallery":
                         Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        startActivityForResult(pickPhoto , 1);
+                        startActivityForResult(pickPhoto, 1);
                         break;
                     default:
                         imageViewSelected = 0;
@@ -105,8 +196,10 @@ public class ProfileActivity extends AppCompatActivity {
             switch (requestCode) {
                 case 0:
                     if (resultCode == RESULT_OK && data != null) {
-                        Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
-                        imageView.setImageBitmap(selectedImage);
+                        System.out.println("Took Picture!");
+                        Bundle extras = data.getExtras();
+                        Bitmap imageBitmap = (Bitmap) extras.get("data");
+                        imageView.setImageBitmap(imageBitmap);
                     }
 
                     break;
@@ -114,6 +207,9 @@ public class ProfileActivity extends AppCompatActivity {
                     if (resultCode == RESULT_OK && data != null) {
                         Uri selectedImage =  data.getData();
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                        System.out.println("selectedImage: " + selectedImage);
+                        System.out.println("filePathColumn: " + Arrays.toString(filePathColumn));
 
                         if (selectedImage != null) {
                             Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
