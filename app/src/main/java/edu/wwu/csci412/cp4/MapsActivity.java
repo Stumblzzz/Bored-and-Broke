@@ -85,14 +85,6 @@ public class MapsActivity
     {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-//        LatLng cfBuilding = new LatLng(48.732839, -122.485237);
-//        mMap.addMarker(new MarkerOptions().position(cfBuilding).title("Marker for Communications Facility"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(cfBuilding));
-
-
-
-        //Location Services test
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED)
@@ -177,25 +169,6 @@ public class MapsActivity
         Log.d("Latitude","status");
     }
 
-//    public void createActivity(View view) {
-////
-////        LatLng cfBuilding = new LatLng(48.732839, -122.485237);
-////
-////        mMap.addMarker(new MarkerOptions().position(cfBuilding).title("Marker for Communications Facility"));
-////        mMap.moveCamera(CameraUpdateFactory.newLatLng(cfBuilding));
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-//                == PackageManager.PERMISSION_GRANTED) {
-//            Location location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-//
-//            MarkerOptions mapMark = new MarkerOptions();
-//            mapMark.position(new LatLng(location.getLatitude(), location.getLongitude()));
-//
-//            mapMark.title("Hey guys Scott here!");
-//
-//            mMap.addMarker(mapMark);
-//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
-//        }
-//    }
 
     @Override
     public boolean onMyLocationButtonClick() {
