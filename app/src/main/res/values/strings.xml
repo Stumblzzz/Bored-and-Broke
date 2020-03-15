@@ -47,4 +47,5 @@
     <string name="app_name">CSCI412-Group5-Bored&amp;Broke-Checkpoint2</string>
     <string name="name_of_activity">Name of Activity</string>
     <string name="title_create_activity">Create</string>
+    <string name="name_of_host">Name of Host</string>
 </resources>
