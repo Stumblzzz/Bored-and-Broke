@@ -11,7 +11,7 @@ public class SQL_Utils {
     }
 
     //Given a database this method will open a connection to that database
-    private Connection getConnection(){
+    public Connection getConnection(){
         Connection conn[] = new Connection[1];
         conn[0] = null;
 
@@ -117,7 +117,10 @@ public class SQL_Utils {
         return true;
     }
 
-    public ResultSet sqlSelect(String table, String condition) {
+    public SQLCloseConnection sqlSelect(String table, String condition) {
+        SQLCloseConnection[] sqlCloseConnections = new SQLCloseConnection[1];
+        SQLCloseConnection sqlCloseConnection = new SQLCloseConnection();
+        sqlCloseConnections[0] = sqlCloseConnection;
         Connection conn = getConnection();
         ResultSet[] results = new ResultSet[1];
 
@@ -130,8 +133,11 @@ public class SQL_Utils {
                         Statement stmt = conn.createStatement();
                         results[0] = stmt.executeQuery(query);
 
-                        stmt.close();
-                        conn.close();
+                        sqlCloseConnections[0].setConnection(conn);
+                        sqlCloseConnections[0].setResultSet(results[0]);
+                        sqlCloseConnections[0].setStatement(stmt);
+                        //stmt.close();
+                        //conn.close();
                     } catch (Exception e) {
                         Log.e("Broken SQL: ", e.toString());
                     }
@@ -142,6 +148,68 @@ public class SQL_Utils {
         } catch (Exception e) {
             Log.e("Broken SQL: ", e.toString());
         }
-        return results[0];
+        return sqlCloseConnections[0];
+    }
+
+    public SQLCloseConnection sqlSelectNoWhere(String table) {
+        SQLCloseConnection[] sqlCloseConnections = new SQLCloseConnection[1];
+        SQLCloseConnection sqlCloseConnection = new SQLCloseConnection();
+        sqlCloseConnections[0] = sqlCloseConnection;
+        Connection conn = getConnection();
+        ResultSet[] results = new ResultSet[1];
+
+        String query = "SELECT * FROM " + table + ";";
+
+        try {
+            Thread t = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Statement stmt = conn.createStatement();
+                        results[0] = stmt.executeQuery(query);
+
+                        sqlCloseConnections[0].setConnection(conn);
+                        sqlCloseConnections[0].setResultSet(results[0]);
+                        sqlCloseConnections[0].setStatement(stmt);
+                        //stmt.close();
+                        //conn.close();
+                    } catch (Exception e) {
+                        Log.e("Broken SQL: ", e.toString());
+                    }
+                }
+            });
+            t.start();
+            t.join();
+        } catch (Exception e) {
+            Log.e("Broken SQL: ", e.toString());
+        }
+        return sqlCloseConnections[0];
+    }
+
+    public boolean sqlDelete(String table, String condition) {
+        Connection conn = getConnection();
+
+        String query = "DELETE * FROM " + table + " WHERE " + condition + ";";
+
+        try {
+            Thread t = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Statement stmt = conn.createStatement();
+                        stmt.executeQuery(query);
+
+                        stmt.close();
+                        conn.close();
+                    } catch (Exception e) {
+                        Log.e("Broken SQL: ", e.toString());
+                    }
+                }
+            });
+            t.start();
+            t.join();
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
     }
 }

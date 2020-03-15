@@ -39,6 +39,14 @@ public class Activity {
         this.location = new Location(address);
     }
 
+    public Activity(int id, String name, String description, Location location) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.creator = null;
+        this.location = location;
+    }
+
     public int getId() {
         return id;
     }

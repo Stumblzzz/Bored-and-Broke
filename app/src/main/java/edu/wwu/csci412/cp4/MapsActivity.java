@@ -26,6 +26,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /**
  * @author Bored & Broke Dev Team
  * @version 0
@@ -38,7 +41,6 @@ public class MapsActivity
         GoogleMap.OnMyLocationClickListener{
 
     private static final int MY_LOCATION_REQUEST_CODE = 1;
-
     protected LocationManager locationManager;
 
 
@@ -84,7 +86,27 @@ public class MapsActivity
     public void onMapReady(GoogleMap googleMap)
     {
         mMap = googleMap;
+        SQL_Utils sql_utils = new SQL_Utils();
 
+        SQLCloseConnection sqlCloseConnection = sql_utils.sqlSelectNoWhere("activities");
+
+        try
+        {
+            populateMap(sqlCloseConnection.getResultSet());
+            sqlCloseConnection.closeSQLConn();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        //Add a marker in Sydney and move the camera
+        //LatLng cfBuilding = new LatLng(48.732839, -122.485237);
+        //mMap.addMarker(new MarkerOptions().position(cfBuilding).title("Marker for Communications Facility"));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(cfBuilding));
+
+
+
+        //Location Services test
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED)
@@ -92,10 +114,12 @@ public class MapsActivity
             mMap.setMyLocationEnabled(true);
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
+            Location location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
         }
         else
         {
-            // Show rationale, TODO this is probably something we should do at some point
+            //Show rationale, TODO this is probably something we should do at some point
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, MY_LOCATION_REQUEST_CODE);
         }
 
@@ -138,11 +162,6 @@ public class MapsActivity
         this.startActivity(profileIntent);
     }
 
-    public void createActivity(View view){
-        Intent createActivityIntent = new Intent(this, CreateActivity.class);
-        this.startActivity(createActivityIntent);
-    }
-
     //Location Services Functions begin below this point
     @Override
     public void onMyLocationClick(@NonNull Location location) {
@@ -169,6 +188,25 @@ public class MapsActivity
         Log.d("Latitude","status");
     }
 
+    public void createActivity(View view) {
+//
+//        LatLng cfBuilding = new LatLng(48.732839, -122.485237);
+//
+//        mMap.addMarker(new MarkerOptions().position(cfBuilding).title("Marker for Communications Facility"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(cfBuilding));
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            Location location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+
+            MarkerOptions mapMark = new MarkerOptions();
+            mapMark.position(new LatLng(location.getLatitude(), location.getLongitude()));
+
+            mapMark.title("Hey guys Scott here!");
+
+            mMap.addMarker(mapMark);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
+        }
+    }
 
     @Override
     public boolean onMyLocationButtonClick() {
@@ -176,6 +214,15 @@ public class MapsActivity
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
         return false;
+    }
+
+    public void populateMap(ResultSet results) throws SQLException
+    {
+        while(results.next())
+        {
+            LatLng tempLocation = new LatLng(results.getDouble(5), results.getDouble(6));
+            mMap.addMarker(new MarkerOptions().position(tempLocation).title(results.getString(2)));
+        }
     }
 
 }
