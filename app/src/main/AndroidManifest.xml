@@ -65,6 +65,11 @@
         </activity>
 
         <activity
+            android:name="edu.wwu.csci412.cp4.CreateActivity"
+            android:label="@string/title_create_activity">
+        </activity>
+
+        <activity
             android:name="edu.wwu.csci412.cp4.activity_list"
             android:screenOrientation="portrait">
 

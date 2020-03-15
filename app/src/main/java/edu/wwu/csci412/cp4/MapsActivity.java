@@ -146,6 +146,11 @@ public class MapsActivity
         this.startActivity(profileIntent);
     }
 
+    public void createActivity(View view){
+        Intent createActivityIntent = new Intent(this, CreateActivity.class);
+        this.startActivity(createActivityIntent);
+    }
+
     //Location Services Functions begin below this point
     @Override
     public void onMyLocationClick(@NonNull Location location) {
@@ -172,25 +177,25 @@ public class MapsActivity
         Log.d("Latitude","status");
     }
 
-    public void createActivity(View view) {
+//    public void createActivity(View view) {
+////
+////        LatLng cfBuilding = new LatLng(48.732839, -122.485237);
+////
+////        mMap.addMarker(new MarkerOptions().position(cfBuilding).title("Marker for Communications Facility"));
+////        mMap.moveCamera(CameraUpdateFactory.newLatLng(cfBuilding));
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+//                == PackageManager.PERMISSION_GRANTED) {
+//            Location location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
 //
-//        LatLng cfBuilding = new LatLng(48.732839, -122.485237);
+//            MarkerOptions mapMark = new MarkerOptions();
+//            mapMark.position(new LatLng(location.getLatitude(), location.getLongitude()));
 //
-//        mMap.addMarker(new MarkerOptions().position(cfBuilding).title("Marker for Communications Facility"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(cfBuilding));
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            Location location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-
-            MarkerOptions mapMark = new MarkerOptions();
-            mapMark.position(new LatLng(location.getLatitude(), location.getLongitude()));
-
-            mapMark.title("Hey guys Scott here!");
-
-            mMap.addMarker(mapMark);
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
-        }
-    }
+//            mapMark.title("Hey guys Scott here!");
+//
+//            mMap.addMarker(mapMark);
+//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
+//        }
+//    }
 
     @Override
     public boolean onMyLocationButtonClick() {

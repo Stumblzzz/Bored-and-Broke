@@ -15,6 +15,16 @@ public class Activity {
         this.location = location;
     }
 
+
+    public Activity(String name, String description, User creator, Location location) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.creator = creator;
+        this.location = location;
+    }
+
+
     public Activity(String name, String description, User creator, double latitude, double longitude) {
         this.name = name;
         this.description = description;
