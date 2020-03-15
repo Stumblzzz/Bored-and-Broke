@@ -45,4 +45,5 @@
     <string name="cost_button">$$$$</string>
     <string name="time_button">Time</string>
     <string name="app_name">CSCI412-Group5-Bored&amp;Broke-Checkpoint2</string>
+    <string name="SampleImageTextDescription">This is where and Image could go</string>
 </resources>
