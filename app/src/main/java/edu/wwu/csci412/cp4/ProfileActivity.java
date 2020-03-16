@@ -1,6 +1,7 @@
 package edu.wwu.csci412.cp4;
 
 import android.Manifest;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,7 +16,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -41,12 +44,12 @@ public class ProfileActivity extends AppCompatActivity {
 
     private String profilePath = null;
     private String backgroundPath = null;
+    private Bitmap profileBitmap = null;
+    private Bitmap backgroundBitmap = null;
     private String defaultProfilePath = "";
     private String defaultBackgroundPath = "";
 
     private int imageViewSelected = 0;
-    private Bitmap profileBitmap = null;
-    private Bitmap backgroundBitmap = null;
     // Storage Permissions
     private static final int REQUEST_PERMISSION = 1;
     private static String[] PERMISSIONS = {
@@ -62,12 +65,13 @@ public class ProfileActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_profile);
 
+        verifyPermissions(this);
+
         ImageView profilePicture = findViewById(R.id.imageView_profile_picture);
         //TODO: profilePicture.setImageURI(Uri.parse("https://boredandbrokebucket.s3-us-west-1.amazonaws.com/GOW.png"));
 
         getStoredData(this);
 
-        // TODO: Get profile and background images from sharedpreferences
         updateView();
     }
 
@@ -95,17 +99,37 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         imageViewSelected = 0;
+
+        setPreferences(this);
     }
 
     public void getStoredData(Context context) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
 
-        this.profilePath = pref.getString(PREFERENCE_PROFILE, defaultProfilePath);
-        this.backgroundPath = pref.getString(PREFERENCE_BACKGROUND, defaultBackgroundPath);
-
-        if(defaultProfilePath.equals("")) {
-
-        }
+        this.profileBitmap = decodeBase64(pref.getString(PREFERENCE_PROFILE, defaultProfilePath));
+        this.backgroundBitmap = decodeBase64(pref.getString(PREFERENCE_BACKGROUND, defaultBackgroundPath));
+//        this.profilePath = pref.getString(PREFERENCE_PROFILE, defaultProfilePath);
+//        this.backgroundPath = pref.getString(PREFERENCE_BACKGROUND, defaultBackgroundPath);
+//
+//        if(!profilePath.equals("")) {
+//            File imgFile = new File(profilePath);
+//
+//            if(imgFile.exists()) {
+//                profileBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+//            } else {
+//                System.out.println("Failed to find image from path: " + profilePath);
+//            }
+//        }
+//
+//        if(!backgroundPath.equals("")) {
+//            File imgFile = new File(backgroundPath);
+//
+//            if(imgFile.exists()) {
+//                backgroundBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+//            } else {
+//                System.out.println("Failed to find image from path: " + backgroundPath);
+//            }
+//        }
     }
 
     public void setPreferences(Context context) {
@@ -113,10 +137,28 @@ public class ProfileActivity extends AppCompatActivity {
 
         SharedPreferences.Editor editor = pref.edit();
 
-        editor.putString(PREFERENCE_PROFILE, profilePath);
-        editor.putString(PREFERENCE_BACKGROUND, backgroundPath);
+        editor.putString(PREFERENCE_PROFILE, encodeTobase64(profileBitmap));
+        editor.putString(PREFERENCE_BACKGROUND, encodeTobase64(backgroundBitmap));
 
         editor.apply();
+    }
+
+    public static String encodeTobase64(Bitmap image) {
+        if(image == null) {
+            return "";
+        }
+
+        Bitmap immage = image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        immage.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] b = baos.toByteArray();
+
+        return Base64.encodeToString(b, Base64.DEFAULT);
+    }
+
+    public static Bitmap decodeBase64(String input) {
+        byte[] decodedByte = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
     }
 
     /**
@@ -181,8 +223,6 @@ public class ProfileActivity extends AppCompatActivity {
                 break;
         }
 
-        verifyPermissions(this);
-
         showBuilder();
     }
 
@@ -227,16 +267,16 @@ public class ProfileActivity extends AppCompatActivity {
                         Bundle extras = data.getExtras();
                         Bitmap imageBitmap = (Bitmap) extras.get("data");
                         if(imageBitmap != null) {
+                            Uri uri = saveBitmapToGallery(imageBitmap);
+
                             if(imageViewSelected == 1) {
                                 backgroundBitmap = imageBitmap;
+                                backgroundPath = uri.getPath();
                             }
                             else if(imageViewSelected == 2) {
                                 profileBitmap = imageBitmap;
+                                profilePath = uri.getPath();
                             }
-
-                            Uri uri = saveBitmapToGallery(imageBitmap);
-
-                            System.out.println("URI: " + uri);
                         } else {
                             Log.w("ProfileActivity", "Error: Failed to update ImageView.");
                         }
@@ -280,32 +320,109 @@ public class ProfileActivity extends AppCompatActivity {
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         String mFileName = "JPEG_" + timeStamp + "_";
 
-        MediaStore.Images.Media.insertImage(getContentResolver(), bm, mFileName , timeStamp);
+        MediaStore.Images.Media.insertImage(getContentResolver(), bm, mFileName, timeStamp);
 
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "IMG_FOLDER");
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "");
 
-        return Uri.fromFile(new File(mediaStorageDir.getPath() + File.separator + mFileName));
+        return Uri.fromFile(new File(mediaStorageDir.getPath() + File.separator + mFileName + ".jpg"));
     }
 
-    public static String getPath(Context context, Uri uri) {
-        String result = null;
-        String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public static String getPath(final Context context, final Uri uri) {
 
-        if(cursor != null) {
-            if (cursor.moveToFirst()) {
-                int column_index = cursor.getColumnIndexOrThrow(proj[0]);
-                result = cursor.getString(column_index);
+        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+
+        // DocumentProvider
+        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+            // ExternalStorageProvider
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
+
+                // TODO handle non-primary volumes
             }
-            cursor.close();
+            // DownloadsProvider
+            else if (isDownloadsDocument(uri)) {
+
+                final String id = DocumentsContract.getDocumentId(uri);
+                final Uri contentUri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+
+                return getDataColumn(context, contentUri, null, null);
+            }
+            // MediaProvider
+            else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[] {
+                        split[1]
+                };
+
+                return getDataColumn(context, contentUri, selection, selectionArgs);
+            }
+        }
+        // MediaStore (and general)
+        else if ("content".equalsIgnoreCase(uri.getScheme())) {
+            return getDataColumn(context, uri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
         }
 
-        if(result == null) {
-            result = "Not found";
-        }
+        return null;
+    }
 
-        return result;
+    public static String getDataColumn(Context context, Uri uri, String selection,
+                                       String[] selectionArgs) {
+
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {
+                column
+        };
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int column_index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(column_index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
     Bitmap drawable_from_url(String url) throws java.net.MalformedURLException, java.io.IOException {
