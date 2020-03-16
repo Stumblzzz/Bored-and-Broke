@@ -1,25 +1,33 @@
 package edu.wwu.csci412.cp4;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.net.HttpURLConnection;
 import java.net.*;
 import java.io.*;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Random;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
@@ -28,6 +36,14 @@ import androidx.core.app.ActivityCompat;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
 public class ProfileActivity extends AppCompatActivity {
+    private static final String PREFERENCE_PROFILE = "profile";
+    private static final String PREFERENCE_BACKGROUND = "background";
+
+    private String profilePath = null;
+    private String backgroundPath = null;
+    private String defaultProfilePath = "";
+    private String defaultBackgroundPath = "";
+
     private int imageViewSelected = 0;
     private Bitmap profileBitmap = null;
     private Bitmap backgroundBitmap = null;
@@ -36,10 +52,6 @@ public class ProfileActivity extends AppCompatActivity {
     private static String[] PERMISSIONS = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA
-    };
-    private static final int REQUEST_CAMERA = 1;
-    private static String[] PERMISSIONS_CAMERA = {
             Manifest.permission.CAMERA
     };
 
@@ -53,6 +65,8 @@ public class ProfileActivity extends AppCompatActivity {
         ImageView profilePicture = findViewById(R.id.imageView_profile_picture);
         //TODO: profilePicture.setImageURI(Uri.parse("https://boredandbrokebucket.s3-us-west-1.amazonaws.com/GOW.png"));
 
+        getStoredData(this);
+
         // TODO: Get profile and background images from sharedpreferences
         updateView();
     }
@@ -60,6 +74,7 @@ public class ProfileActivity extends AppCompatActivity {
     public void updateView() {
         ImageView profileBackground = findViewById(R.id.imageView_profile_background);
         ImageView profilePicture = findViewById(R.id.imageView_profile_picture);
+        TextView profileName = findViewById(R.id.textView_name);
 
         if(backgroundBitmap == null) {
             profileBackground.setImageResource(R.drawable.android_background);
@@ -73,7 +88,35 @@ public class ProfileActivity extends AppCompatActivity {
             profilePicture.setImageBitmap(profileBitmap);
         }
 
+        if(LoginActivity.user == null) {
+            profileName.setText(R.string.profile_name);
+        } else {
+            profileName.setText(LoginActivity.user.getUsername());
+        }
+
         imageViewSelected = 0;
+    }
+
+    public void getStoredData(Context context) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+
+        this.profilePath = pref.getString(PREFERENCE_PROFILE, defaultProfilePath);
+        this.backgroundPath = pref.getString(PREFERENCE_BACKGROUND, defaultBackgroundPath);
+
+        if(defaultProfilePath.equals("")) {
+
+        }
+    }
+
+    public void setPreferences(Context context) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+
+        SharedPreferences.Editor editor = pref.edit();
+
+        editor.putString(PREFERENCE_PROFILE, profilePath);
+        editor.putString(PREFERENCE_BACKGROUND, backgroundPath);
+
+        editor.apply();
     }
 
     /**
@@ -89,8 +132,6 @@ public class ProfileActivity extends AppCompatActivity {
         int permissionWrite = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int permissionRead = ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
         int permissionCamera = ActivityCompat.checkSelfPermission(activity, Manifest.permission.CAMERA);
-
-        System.out.println("READ: " + permissionRead + ", WRITE: " + permissionWrite + ", CAMERA: " + permissionCamera + ", GRANTED: " + PackageManager.PERMISSION_GRANTED);
 
         if (permissionWrite != PackageManager.PERMISSION_GRANTED
                 || permissionRead != PackageManager.PERMISSION_GRANTED
@@ -174,6 +215,7 @@ public class ProfileActivity extends AppCompatActivity {
         builder.show();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -191,6 +233,10 @@ public class ProfileActivity extends AppCompatActivity {
                             else if(imageViewSelected == 2) {
                                 profileBitmap = imageBitmap;
                             }
+
+                            Uri uri = saveBitmapToGallery(imageBitmap);
+
+                            System.out.println("URI: " + uri);
                         } else {
                             Log.w("ProfileActivity", "Error: Failed to update ImageView.");
                         }
@@ -199,7 +245,7 @@ public class ProfileActivity extends AppCompatActivity {
                     break;
                 case 1:
                     if (resultCode == RESULT_OK && data != null) {
-                        Uri selectedImage =  data.getData();
+                        Uri selectedImage = data.getData();
 
                         Bitmap bitmap = null;
                         try {
@@ -211,9 +257,11 @@ public class ProfileActivity extends AppCompatActivity {
                         if(bitmap != null) {
                             if(imageViewSelected == 1) {
                                 backgroundBitmap = bitmap;
+                                backgroundPath = getPath(this, selectedImage);
                             }
                             else if(imageViewSelected == 2) {
                                 profileBitmap = bitmap;
+                                profilePath = getPath(this, selectedImage);
                             }
                         } else {
                             Log.w("ProfileActivity", "Error: Failed to update ImageView.");
@@ -225,6 +273,39 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         updateView();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private Uri saveBitmapToGallery(Bitmap bm) {
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        String mFileName = "JPEG_" + timeStamp + "_";
+
+        MediaStore.Images.Media.insertImage(getContentResolver(), bm, mFileName , timeStamp);
+
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "IMG_FOLDER");
+
+        return Uri.fromFile(new File(mediaStorageDir.getPath() + File.separator + mFileName));
+    }
+
+    public static String getPath(Context context, Uri uri) {
+        String result = null;
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
+
+        if(cursor != null) {
+            if (cursor.moveToFirst()) {
+                int column_index = cursor.getColumnIndexOrThrow(proj[0]);
+                result = cursor.getString(column_index);
+            }
+            cursor.close();
+        }
+
+        if(result == null) {
+            result = "Not found";
+        }
+
+        return result;
     }
 
     Bitmap drawable_from_url(String url) throws java.net.MalformedURLException, java.io.IOException {

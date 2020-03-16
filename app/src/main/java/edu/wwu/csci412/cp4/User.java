@@ -18,6 +18,10 @@ public class User {
         this.reviews = new ArrayList<>();
     }
 
+    public User(String username) {
+        this.username = username;
+    }
+
     public void addActivity(Activity activity) {
         if(!activities.contains(activity)) {
             activities.add(activity);
