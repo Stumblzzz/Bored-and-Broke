@@ -41,6 +41,7 @@ public class MapsActivity
         GoogleMap.OnMyLocationClickListener{
 
     private static final int MY_LOCATION_REQUEST_CODE = 1;
+
     protected LocationManager locationManager;
 
 
@@ -99,12 +100,6 @@ public class MapsActivity
         {
             e.printStackTrace();
         }
-        //Add a marker in Sydney and move the camera
-        //LatLng cfBuilding = new LatLng(48.732839, -122.485237);
-        //mMap.addMarker(new MarkerOptions().position(cfBuilding).title("Marker for Communications Facility"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(cfBuilding));
-
-
 
         //Location Services test
 
@@ -119,7 +114,7 @@ public class MapsActivity
         }
         else
         {
-            //Show rationale, TODO this is probably something we should do at some point
+            // Show rationale, TODO this is probably something we should do at some point
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, MY_LOCATION_REQUEST_CODE);
         }
 
@@ -189,22 +184,11 @@ public class MapsActivity
     }
 
     public void createActivity(View view) {
-//
-//        LatLng cfBuilding = new LatLng(48.732839, -122.485237);
-//
-//        mMap.addMarker(new MarkerOptions().position(cfBuilding).title("Marker for Communications Facility"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(cfBuilding));
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            Location location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-
-            MarkerOptions mapMark = new MarkerOptions();
-            mapMark.position(new LatLng(location.getLatitude(), location.getLongitude()));
-
-            mapMark.title("Hey guys Scott here!");
-
-            mMap.addMarker(mapMark);
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
+            Intent activityIntent = new Intent(this, CreateActivity.class);
+            this.startActivity(activityIntent);
         }
     }
 
