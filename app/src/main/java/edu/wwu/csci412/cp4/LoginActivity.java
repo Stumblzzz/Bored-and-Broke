@@ -9,8 +9,11 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.sql.SQLException;
+
 public class LoginActivity extends AppCompatActivity {
     SQL_Utils sql_utils = new SQL_Utils();
+    public static User user = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -23,7 +26,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void login(View v) {
+    public void login(View v) throws SQLException {
         EditText editTextEmail = (EditText) findViewById(R.id.editText_login_email);
         EditText editTextPassword = (EditText) findViewById(R.id.editText_login_password);
         TextView textViewLoginError = (TextView) findViewById(R.id.login_error);
@@ -32,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         String password = editTextPassword.getText().toString();
 
         if(checkCredentials(email, password)){
+            user = getUserInfo(email, password);
             Intent mapsIntent = new Intent (this, MapsActivity.class);
             this.startActivity(mapsIntent);
         }else{
@@ -61,6 +65,23 @@ public class LoginActivity extends AppCompatActivity {
             return false;
         }
 
-        return (rowsWithCredentials == 1) ? (true) : (false);
+        return rowsWithCredentials == 1;
+    }
+
+    private User getUserInfo(String email, String password) throws SQLException {
+        String tableName = "registration";
+        String condition = "(email = '" + email + "' AND pass = '" + password + "')";
+
+        SQLCloseConnection conn = sql_utils.sqlSelect(tableName, condition);
+
+        User user = null;
+
+        if(conn.getResultSet().next()) {
+            user = new User(conn.getResultSet().getString(3));
+        }
+
+        conn.closeSQLConn();
+
+        return user;
     }
 }
